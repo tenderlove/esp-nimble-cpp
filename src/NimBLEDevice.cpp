@@ -876,9 +876,6 @@ void NimBLEDevice::init(const std::string &deviceName) {
         bt_cfg.normal_adv_size = m_scanDuplicateSize;
         bt_cfg.scan_duplicate_type = m_scanFilterMode;
 
-        ESP_ERROR_CHECK(esp_bt_controller_init(&bt_cfg));
-        ESP_ERROR_CHECK(esp_bt_controller_enable(ESP_BT_MODE_BLE));
-        ESP_ERROR_CHECK(esp_nimble_hci_init());
 #endif
         nimble_port_init();
 
@@ -924,12 +921,6 @@ void NimBLEDevice::deinit(bool clearAll) {
     int ret = nimble_port_stop();
     if (ret == 0) {
         nimble_port_deinit();
-#ifdef ESP_PLATFORM
-        ret = esp_nimble_hci_and_controller_deinit();
-        if (ret != ESP_OK) {
-            NIMBLE_LOGE(LOG_TAG, "esp_nimble_hci_and_controller_deinit() failed with error: %d", ret);
-        }
-#endif
         initialized = false;
         m_synced = false;
 
